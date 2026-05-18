@@ -9,7 +9,10 @@ base_router = APIRouter(
 
 @base_router.get("/")
 async def welcome():
+    app_name=os.getenv("APP_NAME")
+    app_version=os.getenv("APP_VERSION")
     return {
 
-    "massage":"hi"
+    "app name":app_name,
+    "app version":app_version
     }
