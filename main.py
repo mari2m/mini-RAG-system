@@ -1,11 +1,9 @@
-#uvicorn main:app --reload --host 0.0.0.0 --port 5000
-#http://127.0.0.1:8000/docs or use postman
-
 from fastapi import FastAPI
-app=FastAPI()
+from dotenv import load_dotenv
+load_dotenv(".env")
 
-@app.get("/welcome")
-def welcome():
-    return{
-    "massage":"hi"
-    }
+from routes import base
+
+app = FastAPI()
+
+app.include_router(base.base_router)
