@@ -31,6 +31,7 @@ class ProjectModel(BaseDataModel):
         
         return Project(**record)
     
+    #should use pagination 
     async def get_all_projects(self, page: int=1, page_size: int=10):
 
         # count total number of documents

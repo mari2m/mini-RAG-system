@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Depends, UploadFile, status
+from fastapi import FastAPI, APIRouter, Depends,Request, UploadFile, status
 from fastapi.responses import JSONResponse
 import os
 from helpers.config import get_settings, Settings
@@ -6,6 +6,8 @@ from controllers import DataController, ProjectController
 import aiofiles
 from models import ResponseSignal
 import logging
+from models.ProjectModel import ProjectModel
+
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -15,10 +17,12 @@ data_router = APIRouter(
 )
 
 @data_router.post("/upload/{project_id}")
-async def upload_data(project_id: str, file: UploadFile,
+async def upload_data(request:Request,project_id: str, file: UploadFile,
                       app_settings: Settings = Depends(get_settings)):
         
     
+    project_model=project_model(db_client=request.app.db_client)
+    project=project_model.get_project_or_create_one(project_id=project_id)
     # validate the file properties
     data_controller = DataController()
 
@@ -57,5 +61,6 @@ async def upload_data(project_id: str, file: UploadFile,
             content={
                 "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value,
                 "file_id": file_id
+                "project_id":str(project_id)
             }
         )
