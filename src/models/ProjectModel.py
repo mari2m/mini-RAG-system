@@ -1,13 +1,18 @@
+from enum import Enum
+
+class DataBaseEnum(Enum):
+
+    COLLECTION_PROJECT_NAME = "projects"
+    COLLECTION_CHUNK_NAME = "chunks"
 from .BaseDataModel import BaseDataModel
 from .db_schemes import Project
 from .enums.DataBaseEnum import DataBaseEnum
 
-
 class ProjectModel(BaseDataModel):
+
     def __init__(self, db_client: object):
         super().__init__(db_client=db_client)
         self.collection = self.db_client[DataBaseEnum.COLLECTION_PROJECT_NAME.value]
-    
 
     async def create_project(self, project: Project):
 
@@ -15,7 +20,7 @@ class ProjectModel(BaseDataModel):
         project._id = result.inserted_id
 
         return project
-    
+
     async def get_project_or_create_one(self, project_id: str):
 
         record = await self.collection.find_one({
@@ -30,8 +35,7 @@ class ProjectModel(BaseDataModel):
             return project
         
         return Project(**record)
-    
-    #should use pagination 
+
     async def get_all_projects(self, page: int=1, page_size: int=10):
 
         # count total number of documents
